@@ -2,9 +2,8 @@ import * as R from 'ramda';
 
 const MSGS = {
   SHOW_FORM: 'SHOW_FORM',
-  MEAL_INPUT: 'MEAL_INPUT',
-  CALORIES_INPUT: 'CALORIES_INPUT',
-  SAVE_MEAL: 'SAVE_MEAL',
+  LOCATION_INPUT: 'LOCATION_INPUT', //old meal_input new location_input
+  ADD_LOCATION: 'SAVE_MEAL', //old save_meal new add_location
   DELETE_MEAL: 'DELETE_MEAL',
 };
 
@@ -15,17 +14,10 @@ export function showFormMsg(showForm) {
   };
 }
 
-export function mealInputMsg(description) {
+export function locationInputMsg(location) {
   return {
-    type: MSGS.MEAL_INPUT,
+    type: MSGS.LOCATION_INPUT,
     description,
-  };
-}
-
-export function caloriesInputMsg(calories) {
-  return {
-    type: MSGS.CALORIES_INPUT,
-    calories,
   };
 }
 

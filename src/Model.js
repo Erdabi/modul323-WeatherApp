@@ -1,18 +1,22 @@
 const initModel = {
-  description: '',
-  calories: 0,
+  location: '', // old was description now its location
+  temp: 0, //old was calories now its temp
   showForm: false,
   nextId: 3,
   editId: null,
   meals: [{
     id: 1,
-    description: 'Breakfast 🥣',
-    calories: 420
+    location: 'Breakfast 🥣',
+    temp: 420,
+    low: 3,
+    high: 5
   },
   {
     id: 2,
-    description: 'Lunch Spaghetti 🍝',
-    calories: 670
+    location: 'China',
+    temp: 20,
+    low: 3,
+    high: 5
   }],
 };
 
