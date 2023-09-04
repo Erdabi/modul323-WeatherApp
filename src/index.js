@@ -16,7 +16,6 @@ const makeOpenWeatherAPICall = async (location) => {
     const response = await fetch(URL);
     const data = await response.json();
     const { temp, temp_min, temp_max } = data.main;
-                                                    //Location kommt manuel und rest von api
 }
 
 makeOpenWeatherAPICall();

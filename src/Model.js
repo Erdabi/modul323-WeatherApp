@@ -6,7 +6,7 @@ const initModel = {
   showForm: false,
   nextId: 3,
   editId: null,
-  locations: [{ //old was meals now ist table
+  locations: [{ //old was meals now ist locations
     id: 1,
     location: 'China', 
     temp: 20,
