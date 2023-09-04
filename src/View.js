@@ -1,7 +1,7 @@
 import hh from "hyperscript-helpers";
 import { h } from "virtual-dom";
 import * as R from "ramda";
-import { showFormMsg, mealInputMsg, caloriesInputMsg, saveMealMsg, deleteMealMsg } from "./Update";
+import { showFormMsg, locationInputMsg, addLocationMsg, deleteLocationMsg } from "./Update";
 
 const btnStyle = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
 
@@ -11,17 +11,19 @@ function cell(tag, className, value) {
   return tag({ className }, value);
 }
 
-const tableHeader = thead([tr([cell(th, "text-left", "Meal"), cell(th, "text-left", "Calories"), cell(th, "", "")])]);
-
-function mealRow(dispatch, className, meal) {
+const tableHeader = thead([tr([cell(th, "text-left", "Location"), cell(th, "text-left", "Temp"), cell(th, "text-left", "High"), cell(th, "text-left", "Low")])]);
+                                                                                                                    
+function locationRow(dispatch, className, meal) {
   return tr({ className }, [
-    cell(td, "px-1 py-2", meal.description),
-    cell(td, "px-1 py-2", meal.calories),
+    cell(td, "px-1 py-2", meal.location),
+    cell(td, "px-1 py-2", meal.temp),
+    cell(td, "px-1 py-2", meal.high),
+    cell(td, "px-1 py-2", meal.low),
     cell(td, "px-1 py-2 text-right", [
       button(
         {
           className: "hover:bg-gray-200 p-2 rounded",
-          onclick: () => dispatch(deleteMealMsg(meal.id)),
+          onclick: () => dispatch(deleteLocationMsg(meal.id)),
         },
         "🗑"
       ),
@@ -29,27 +31,19 @@ function mealRow(dispatch, className, meal) {
   ]);
 }
 
-function totalRow(meals) {
-  const total = R.pipe(
-    R.map((meal) => meal.calories),
-    R.sum
-  )(meals);
-  return tr({ className: "font-bold" }, [cell(td, "", "Total"), cell(td, "", total), cell(td, "", "")]);
-}
+function mealsBody(dispatch, className, locations) {
+  const rows = R.map(R.partial(locationRow, [dispatch, "odd:bg-white even:bg-gray-100"]), locations);
 
-function mealsBody(dispatch, className, meals) {
-  const rows = R.map(R.partial(mealRow, [dispatch, "odd:bg-white even:bg-gray-100"]), meals);
-
-  const rowsWithTotal = [...rows, totalRow(meals)];
+  const rowsWithTotal = [...rows];
 
   return tbody({ className }, rowsWithTotal);
 }
 
-function tableView(dispatch, meals) {
-  if (meals.length === 0) {
-    return div({ className: "pt-8 text-center" }, "No Meals yet... 😢");
+function tableView(dispatch, locations) {
+  if (locations.length === 0) {
+    return div({ className: "pt-8 text-center" }, "No Locations yet... 😢");
   }
-  return table({ className: "mt-4" }, [tableHeader, mealsBody(dispatch, "", meals)]);
+  return table({ className: "mt-4" }, [tableHeader, mealsBody(dispatch, "", locations)]);
 }
 
 function fieldSet(labelText, inputValue, placeholder, oninput) {
@@ -72,7 +66,7 @@ function buttonSet(dispatch) {
         className: `${btnStyle} bg-green-500 hover:bg-green-700`,
         type: "submit",
       },
-      "Save"
+      "Add"
     ),
     button(
       {
@@ -86,20 +80,19 @@ function buttonSet(dispatch) {
 }
 
 function formView(dispatch, model) {
-  const { description, calories, showForm } = model;
+  const { location, temp, showForm } = model;
   if (showForm) {
     return form(
       {
         className: "flex flex-col gap-4",
         onsubmit: (e) => {
           e.preventDefault();
-          dispatch(saveMealMsg);
+          dispatch(addLocationMsg);
         },
       },
       [
         div({ className: "flex gap-4" }, [
-          fieldSet("Meal", description, "Enter meal name...", (e) => dispatch(mealInputMsg(e.target.value))),
-          fieldSet("Calories", calories || "", "Enter calories number...", (e) => dispatch(caloriesInputMsg(e.target.value))),
+          fieldSet("Location", location, "Enter location...", (e) => dispatch(locationInputMsg(e.target.value))),
         ]),
         buttonSet(dispatch),
       ]
@@ -110,12 +103,12 @@ function formView(dispatch, model) {
       className: `${btnStyle} max-w-xs`,
       onclick: () => dispatch(showFormMsg(true)),
     },
-    "Add Meal"
+    "Add"
   );
 }
 
 function view(dispatch, model) {
-  return div({ className: "flex flex-col" }, [formView(dispatch, model), tableView(dispatch, model.meals)]);
+  return div({ className: "flex flex-col" }, [formView(dispatch, model), tableView(dispatch, model.locations)]);
 }
 
 export default view;
